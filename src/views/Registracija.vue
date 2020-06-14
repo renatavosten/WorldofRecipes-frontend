@@ -42,13 +42,12 @@
 </template>
 
 <script>
-import { Auth } from '@/services';
-
 export default {
     data() {
         return {
             errorMessage: '',
             username:'',
+            prezime: '',
             email: '',
             password: '',
             passwordConfirmation: ''
@@ -62,7 +61,6 @@ export default {
             if (success == true) {
                 this.$router.push({ name: 'home' });
             }
-
     //   firebase
     //     .auth()
     //     .createUserWithEmailAndPassword(this.email, this.password)
@@ -90,7 +88,7 @@ export default {
     //       this.errorMessage = error.message;
     //     });
     //   // ovdje se izvršava kod koji ide NAKON SLANJA UPITA za registraciju
-        }
+    }
   }
 }
 </script>

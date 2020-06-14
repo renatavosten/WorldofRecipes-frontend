@@ -1,6 +1,6 @@
 <template>
   <div v-if="card">
-    <ReceptCard :info="card" :showdetail="true"/>
+    <ReceptCard :info="card" :showdetail="true" :showcomments="true" />
   </div>
 </template>
 

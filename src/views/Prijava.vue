@@ -13,8 +13,8 @@
                                     {{ errorMessage }}
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <label for="exampleInputEmail1" >Email:</label>
-                                    <input v-model="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Unesite email">
+                                    <label for="exampleInputEmail1" >Korisničko ime:</label>
+                                    <input v-model="username" type="text" class="form-control" id="exampleInputEmail1" placeholder="Unesite korisničko ime">
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="exampleInputPassword1">Lozinka:</label>
@@ -43,20 +43,19 @@ import { Auth } from '@/services';
 export default {
   data() {
     return {
-      email: '',
+      username: '',
       password: '',
       errorMessage: ''
     }
   },
   methods: {
     async login() {
-      let success = await Auth.login(this.email, this.password);
+      let success = await Auth.login(this.username, this.password);
       console.log("Rezultat prijave ", success);
 
       if (success == true) {
         this.$router.push({ name: 'home' });
       }
-
       // firebase.auth().signInWithEmailAndPassword(this.email, this.password).catch(error => {
       //   console.log(error);
       //   this.errorMessage = error.message;

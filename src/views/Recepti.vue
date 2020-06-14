@@ -20,14 +20,20 @@ export default {
             
         };
     },
-    
+    //okida funkciju kada detektira promjenu na nekoj varijabli iz data()
+    watch: {
+        'store.searchTerm': _.debounce(function(val) {
+           this.fetchRecepti(val);
+        }, 500)
+    }, 
     created() {
         this.fetchRecepti();
     },
     name: 'recepti',
     methods: {
-        async fetchRecepti() {
-            this.cards = await Recepti.getAll();
+        async fetchRecepti(term) {
+            term = term || store.searchTerm;
+            this.cards = await Recepti.getAll(term);
             
         },
         gotoDetails(card) {
@@ -45,7 +51,5 @@ export default {
 button {
     margin-bottom: 20px;
 }
-.najpost {
-    border-style: dashed
-}
+
 </style>

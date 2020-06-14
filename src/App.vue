@@ -7,7 +7,7 @@
             <div class="navbar fixed-top">
               <router-link class="active" to="/">Početna</router-link>
               <div v-if="auth.authenticated" class="navbar-center">
-                <input  class="form-control mr-sm-2" type="search" placeholder="Trazi nesto" aria-label="Search">
+                <input v-model="store.searchTerm" class="form-control mr-sm-2" type="search" placeholder="Trazi po nazivu ili sastojku" aria-label="Search">
               </div>
               <div class="navbar-right">
                 <router-link v-if="auth.authenticated" class="nav-link" to="/dodajrecept">Dodaj recept</router-link>
@@ -23,7 +23,6 @@
     <div class="container">
       <router-view/>
     </div>
-    
   </div>
 </template>
 
@@ -35,13 +34,13 @@ export default {
   data() {
     return {
       auth: Auth.state,
-      store: store
+      store: store,
     };
   },
   methods: {
    logout() {
-     Auth.logout();
-     this.$router.go();
+    Auth.logout();
+    this.$router.go();
     //  firebase.auth().signOut();
    }
   },
@@ -108,7 +107,11 @@ created () {
   float: right;
 }
 .nav-link{
-color:white;
-font-size: 30px;
- }
+  color:white;
+  font-size: 30px;
+}
+.mr-sm-2 {
+  width: 350px;
+}
+
 </style>

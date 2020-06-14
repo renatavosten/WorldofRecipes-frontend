@@ -1,3 +1,6 @@
 export default {
-    userEmail: null,
+    authenticated: false,
+    //username: '',
+    searchTerm: '',
+    postComment: '',
 }

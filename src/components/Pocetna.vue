@@ -9,13 +9,14 @@
 </template>
 
 <script>
-
 import store from "@/store.js";
 import { Auth } from '@/services';
+
 export default {
   data () {
     return {
       auth: Auth.state,
+      store,
     };  
   }
 }
@@ -45,7 +46,6 @@ body {
   border-radius: 5px;
   text-align: center;
 }
-
 .container .btn:hover {
   background-color: rgb(66, 198, 250);
   color: white;

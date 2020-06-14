@@ -6,9 +6,9 @@
         <div class="card border-info mb-3">
             <h1 class=" card-header text-info text-center mb-5">Dodaj novi recept</h1>  <!--ovo se ne vidi???? -->
             <div class="card-body">
-                <div class="form-group text-center">
+                <!-- <div class="form-group text-center">
                     <croppa :width="350" :height="350" v-model="imageData"></croppa>
-                </div>
+                </div> -->
                
                 <form @submit.prevent="PostRecipes">
                     <div class="form-group col-md-12">
@@ -24,8 +24,18 @@
                         <textarea v-model="priprema" class="form-control" id="inputPriprema" rows="10" placeholder="Upišite pripremu recepta" required></textarea>
                     </div>
                     <div class="form-group col-md-12">
-                        <label for="inputvrijeme">Vrijeme pripreme:</label>
-                        <input v-model="vrijeme_priprema" type="text" class="form-control" id="inputvrijeme" placeholder="Upišite vrijeme pripreme recepta">  
+                        <label for="inputVrijeme">Vrijeme pripreme:</label>
+                        <input v-model="vrijeme_priprema" type="text" class="form-control" id="inputVrijeme" placeholder="Upišite vrijeme pripreme recepta">  
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="inputKategorija">Kategorija:</label>
+                        <select v-model="kategorija" id="inputKategorija" class="form-control" placeholder="Odaberite kategoriju recepta">
+                          <option v-for="i in inputKategorija" v-bind:key="i"> {{ i }} </option>
+                        </select> 
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="inputSlika">Slika:</label>
+                        <input v-model="slika" type="url" class="form-control" id="inputSlika" placeholder="Upišite url slike">  
                     </div>
                  
                     <div class="text-center">
@@ -41,61 +51,86 @@
 </template>
 
 <script>
+import { Recepti, Auth } from '@/services';
+
 export default {
   name: 'DodajRecept',
     data() {
         return {
+            auth: Auth.state,
             errorMessage: '',
             ime: '',
             sastojci: '',
             priprema: '',
             vrijeme_priprema: '',
-            autor: '',
-            imageData: null
+            inputKategorija: ["Deserti", "Hladna predjela", "Topla predjela", "Glavna jela", "Salate", "Kruh i peciva", "Juhe"],
+            kategorija:'',
+            slika: '',
+            //imageData: null
         }
     },
     methods: {
-        PostRecipes() {
-         var user = firebase.auth().currentUser;
-            this.imageData.generateBlob(blobData => {
-                if (blobData != null) {
-                    let imageName = user.email + "/" + Date.now() + ".png";  
-                    storage
-                      .ref(imageName)
-                      .put(blobData)
-                      .then(result => {
-                        result.ref.getDownloadURL()
-                          .then(url => {
-                            if (user) {
-                              db.collection("Recepti")
-                                .add({
-                                  inputIme: this.ime,
-                                  inputSastojci: this.sastojci,
-                                  inputPriprema: this.priprema,
-                                  inputvrijeme: this.vrijeme_priprema,
-                                  autor: user.email,
-                                  url:url
-                                })
-                                .then(() => {
-                                  alert("Uspješno dodan recept!");
-                                    if (this.$route.name !== "home")
-                                        this.$router.push({ name: "home" }).catch(err => console.log(err))
-                                })
-                            }else{
-                                //.catch(e => {
-                                 console.error("Error adding document: ", error);
-                                //});
-                               }   
-                          })
-                          .catch(e => {
-                            console.error(e)
-                          })
-                        })
-                        .catch(e => {
-                          console.error(e)
-                        })
-                }
-            });
+        async PostRecipes() {
+          let novi_recept = {
+            naziv: this.ime,
+            sastojci: this.sastojci,
+            priprema: this.priprema,
+            vrijeme_pripreme: this.vrijeme_priprema,
+            inputKategorija: this.kategorija,
+            slika: this.slika,
+            username: this.auth.username
+          };
+          try {
+            await Recepti.add(novi_recept);
+          } catch (e) {
+            console.error("Greška prilikom slanja posta ", e);
+          } finally {
+            alert("Uspješno dodan recept!");
+            if (this.$route.name !== "home")
+               this.$router.push({ name: "home" }).catch(err => console.log(err))
+            console.log("dodan recept");
+          }
+
+        //  var user = firebase.auth().currentUser;
+        //     this.imageData.generateBlob(blobData => {
+        //         if (blobData != null) {
+        //             let imageName = user.email + "/" + Date.now() + ".png";  
+        //             storage
+        //               .ref(imageName)
+        //               .put(blobData)
+        //               .then(result => {
+        //                 result.ref.getDownloadURL()
+        //                   .then(url => {
+        //                     if (user) {
+        //                       db.collection("Recepti")
+        //                         .add({
+        //                           inputIme: this.ime,
+        //                           inputSastojci: this.sastojci,
+        //                           inputPriprema: this.priprema,
+        //                           inputvrijeme: this.vrijeme_priprema,
+        //                           autor: user.email,
+        //                           url:url
+        //                         })
+        //                         .then(() => {
+        //                           alert("Uspješno dodan recept!");
+        //                             if (this.$route.name !== "home")
+        //                                 this.$router.push({ name: "home" }).catch(err => console.log(err))
+        //                         })
+        //                     }else{
+        //                         //.catch(e => {
+        //                          console.error("Error adding document: ", error);
+        //                         //});
+        //                        }   
+        //                   })
+        //                   .catch(e => {
+        //                     console.error(e)
+        //                   })
+        //                 })
+        //                 .catch(e => {
+        //                   console.error(e)
+        //                 })
+        //         }
+        //     });
         }
     }
 }
